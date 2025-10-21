@@ -17,8 +17,8 @@ import { Ionicons } from '@expo/vector-icons';
 export type RandomAdventureValues = {
   genre: string | null;
   includeMagic: boolean | null;
-  characterName: string;        // resolved from either new or existing
-  selectedCharacterId?: string; // present when "existing" was used
+  characterName: string;        
+  selectedCharacterId?: string; 
 };
 
 export type ExistingCharacter = {
@@ -27,7 +27,7 @@ export type ExistingCharacter = {
   race?: string;
   gender?: string;
   age?: number;
-  tags?: string[]; // e.g. ["Combat Archery","Naturalist"]
+  tags?: string[]; 
 };
 
 type RandomAdventureModalProps = {
@@ -37,7 +37,7 @@ type RandomAdventureModalProps = {
 
   genres?: string[];
   existingCharacters?: ExistingCharacter[];
-  /** Optional: navigate to characterCreation.tsx */
+ 
   onCreateNewCharacter?: () => void;
 };
 
