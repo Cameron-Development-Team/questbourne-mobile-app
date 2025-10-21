@@ -1,5 +1,6 @@
 // app/appHeader.tsx
 import React from 'react';
+import { router } from 'expo-router';
 import { View, Image, StyleSheet, Pressable, SafeAreaView } from 'react-native';
 
 const LOGO = require('../assets/logo2.png');
@@ -19,9 +20,11 @@ export default function AppHeader({ onHamburgerPress }: Props) {
           <Image source={HAMBURGER} style={styles.icon} resizeMode="contain" />
         </Pressable>
 
-        <View style={styles.logoWrap}>
-          <Image source={LOGO} style={styles.logo} resizeMode="contain" />
-        </View>
+        <Pressable onPress={() => router.push('/home')}>
+          <View style={styles.logoWrap}>
+            <Image source={LOGO} style={styles.logo} resizeMode="contain" />
+          </View>
+        </Pressable>
 
         <View style={styles.rightCluster}>
           <Pressable style={styles.circleBtn} onPress={() => console.log('Notifications')}>
@@ -44,7 +47,7 @@ const styles = StyleSheet.create({
     height: 72, flexDirection: 'row', alignItems: 'center',
     justifyContent: 'space-between', paddingHorizontal: 12,
   },
-  logoWrap: { flex: 1, alignItems: 'center' },
+  logoWrap: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   logo: { width: 220, height: 40 },
   circleBtn: {
     width: 48, height: 48, borderRadius: 24, backgroundColor: BTN_BG,

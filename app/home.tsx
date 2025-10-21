@@ -13,9 +13,8 @@ import {
 import { router } from 'expo-router';
 
 import AppHeader from './appHeader';
-import AccountModal from './account';                 // ← add this
+import AccountModal from './account';                 
 
-// ✅ These files are in the same folder as home.tsx
 import { RandomAdventureModal } from './randomAdventure';
 import { CustomAdventureModal } from './customAdventure';
 
@@ -120,6 +119,13 @@ export default function AdventureScreen() {
             image={require('../assets/card5.png')}
             character={require('../assets/character5.png')}
             onPress={() => router.push('/terminatedAdventures')}
+          />
+          <AdventureCard
+            title="Character Creation"
+            subtitle="Create your characters"
+            image={require('../assets/card5.png')}
+            character={require('../assets/character5.png')}
+            onPress={() => router.push('/characterCreation')}
           />
         </View>
       </ScrollView>

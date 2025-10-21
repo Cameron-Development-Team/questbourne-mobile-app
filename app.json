@@ -14,14 +14,19 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.ijoel23.questbourne-app"
+      "bundleIdentifier": "com.mattcameron10.questbourne-app",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "buildNumber": "4"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon1.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "versionCode": 4
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -30,18 +35,19 @@
       "expo-router",
       "expo-font"
     ],
+    "owner": "mattcameron10",
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "eb72ee7a-f8fc-457f-8a9e-3d8f85f08189"
+        "projectId": "595a83c6-26d9-4d66-b21e-1697ee40eed3"
       }
     },
-    "owner": "ijoel23",
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/eb72ee7a-f8fc-457f-8a9e-3d8f85f08189"
+      "enabled": false,
+      "fallbackToCacheTimeout": 0
     }
   }
 }

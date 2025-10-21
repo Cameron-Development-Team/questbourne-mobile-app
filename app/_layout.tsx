@@ -75,6 +75,8 @@ export default function RootLayout() {
         <Tabs.Screen name="lowerPlan" options={{ href: null }} />
         <Tabs.Screen name="pauseSubscription" options={{ href: null }} />
         <Tabs.Screen name="billingHistory" options={{ href: null }} />
+        <Tabs.Screen name="characterCreation" options={{ href: null }} />
+
       </Tabs>
     </View>
   );

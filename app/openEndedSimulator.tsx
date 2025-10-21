@@ -1,4 +1,4 @@
-// app/archiveAdventure.tsx
+// app/openEndedSimulator.tsx
 import React, { useState } from 'react';
 import {
   View,
@@ -9,29 +9,74 @@ import {
   Pressable,
   Dimensions,
   ImageBackground,
+  Modal,
+  FlatList,
 } from 'react-native';
 import { router } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const screenWidth = Dimensions.get('window').width;
+const GOLD = '#BF9C77';
 
-export default function ArchiveAdventureScreen() {
-  const [selectedGenre, setSelectedGenre] = useState('');
-  const [showPicker, setShowPicker] = useState(false);
+type Character = {
+  id: string;
+  name: string;
+  race: string;
+  gender: string;
+  age: number;
+};
+
+export default function OpenEndedSimulatorScreen() {
+  // Strongly type state to avoid “never” issues
+  const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
+  const [showCharacterPicker, setShowCharacterPicker] = useState<boolean>(false);
+
+  // Example saved characters (replace with your source of truth)
+  const existingCharacters: Character[] = [
+    { id: '1', name: 'Eira Shadowglow', race: 'Human', gender: 'Female', age: 25 },
+    { id: '2', name: 'Zha\'thik "The Echokeeper"', race: 'Custom', gender: 'Non-binary', age: 65 },
+  ];
 
   return (
     <ScrollView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <Pressable onPress={() => router.push('/home')} style={styles.backButton}>
-          <Icon name="chevron-back" size={24} color="#BF9C77" />
+          <Icon name="chevron-back" size={24} color={GOLD} />
         </Pressable>
         <Image source={require('../assets/logo2.png')} style={styles.logo} />
       </View>
 
-      {/* Section title */}
+      {/* Title + Character selection actions */}
       <View style={styles.beginSection}>
         <Text style={styles.sectionTitle}>Open Ended Simulators</Text>
+
+        {/* Selected Character preview (if any) */}
+        {selectedCharacter && (
+          <Text style={styles.selectedCharacter}>
+            Selected Character:{' '}
+            <Text style={styles.characterName}>{selectedCharacter.name}</Text>
+          </Text>
+        )}
+
+        {/* Action buttons row */}
+        <View style={styles.actionsRow}>
+          <Pressable
+            style={[styles.actionBtn, styles.actionBtnGhost]}
+            onPress={() => router.push('/characterCreation')}
+          >
+            <Text style={[styles.actionBtnText, styles.actionBtnGhostText]}>
+              CREATE NEW CHARACTER
+            </Text>
+          </Pressable>
+
+          <Pressable
+            style={styles.actionBtn}
+            onPress={() => setShowCharacterPicker(true)}
+          >
+            <Text style={styles.actionBtnText}>USE EXISTING CHARACTER</Text>
+          </Pressable>
+        </View>
       </View>
 
       {/* Cards */}
@@ -65,10 +110,57 @@ export default function ArchiveAdventureScreen() {
           </View>
         ))}
       </View>
+
+      {/* Character Picker Modal */}
+      <Modal
+        visible={showCharacterPicker}
+        animationType="fade"
+        transparent
+        onRequestClose={() => setShowCharacterPicker(false)}
+      >
+        <View style={styles.modalBackdrop}>
+          <View style={styles.modalCard}>
+            <Text style={styles.modalTitle}>Select a Character</Text>
+
+            <FlatList<Character>
+              data={existingCharacters}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => {
+                const isActive = selectedCharacter?.id === item.id;
+                return (
+                  <Pressable
+                    style={[styles.characterCard, isActive && styles.characterCardActive]}
+                    onPress={() => {
+                      setSelectedCharacter(item);
+                      setShowCharacterPicker(false);
+                    }}
+                  >
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.characterNameText}>{item.name}</Text>
+                      <Text style={styles.characterDetails}>
+                        {item.race} • {item.gender} • Age {item.age}
+                      </Text>
+                    </View>
+                    {isActive && <Icon name="checkmark-circle" size={22} color={GOLD} />}
+                  </Pressable>
+                );
+              }}
+            />
+
+            <Pressable
+              style={styles.modalCloseButton}
+              onPress={() => setShowCharacterPicker(false)}
+            >
+              <Text style={styles.modalCloseText}>CLOSE</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
 
+/* ---------------------- STYLES ---------------------- */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -94,21 +186,66 @@ const styles = StyleSheet.create({
     height: 60,
     resizeMode: 'contain',
   },
+
   beginSection: {
-    flexDirection: 'row',
     alignItems: 'center',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    gap: 10,
     marginBottom: 16,
   },
   sectionTitle: {
     fontFamily: 'El Messiri',
-    color: '#BF9C77',
+    color: GOLD,
     fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 8,
+    marginBottom: 10,
+    textAlign: 'center',
   },
+  selectedCharacter: {
+    color: '#ccc',
+    fontSize: 14,
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  characterName: {
+    color: GOLD,
+    fontWeight: 'bold',
+  },
+
+  /* Action buttons under title */
+  actionsRow: {
+    flexDirection: 'row',
+    gap: 12,
+    width: '100%',
+    justifyContent: 'center',
+    paddingHorizontal: 6,
+    marginBottom: 6,
+  },
+  actionBtn: {
+    flexGrow: 1,
+    maxWidth: 220,
+    borderRadius: 24,
+    backgroundColor: GOLD,
+    paddingHorizontal: 16,
+    minHeight: 44,
+    justifyContent: 'center', // vertical center
+    alignItems: 'center', // horizontal center
+  },
+  actionBtnText: {
+    color: '#161616',
+    fontFamily: 'El Messiri',
+    fontWeight: '700',
+    fontSize: 13,
+    textAlign: 'center',
+  },
+  actionBtnGhost: {
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: GOLD,
+  },
+  actionBtnGhostText: {
+    color: GOLD,
+  },
+
+  /* Cards */
   cardGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -121,7 +258,7 @@ const styles = StyleSheet.create({
   cardImageWrapper: {
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#BF9C77',
+    borderColor: GOLD,
     overflow: 'hidden',
     marginBottom: 6,
   },
@@ -130,7 +267,7 @@ const styles = StyleSheet.create({
     height: 160,
   },
   cardTitle: {
-    color: '#BF9C77',
+    color: GOLD,
     fontFamily: 'El Messiri',
     fontWeight: 'bold',
     fontSize: 18,
@@ -141,7 +278,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   playButton: {
-    borderColor: '#BF9C77',
+    borderColor: GOLD,
     borderWidth: 1,
     borderRadius: 20,
     paddingVertical: 10,
@@ -149,7 +286,71 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   playText: {
-    color: '#BF9C77',
+    color: GOLD,
+    fontWeight: 'bold',
+  },
+
+  /* Modal */
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  modalCard: {
+    width: '100%',
+    maxWidth: 420,
+    backgroundColor: '#1f1b1b',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: GOLD,
+    padding: 16,
+  },
+  modalTitle: {
+    fontFamily: 'El Messiri',
+    color: GOLD,
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  characterCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#3c3530',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 10,
+    backgroundColor: '#2b2626',
+  },
+  characterCardActive: {
+    borderColor: GOLD,
+    backgroundColor: '#3a3431',
+  },
+  characterNameText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontFamily: 'El Messiri',
+    fontSize: 16,
+  },
+  characterDetails: {
+    color: '#bbb',
+    fontSize: 12,
+    marginTop: 4,
+  },
+  modalCloseButton: {
+    marginTop: 10,
+    alignSelf: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    borderWidth: 1,
+    borderColor: GOLD,
+    borderRadius: 20,
+  },
+  modalCloseText: {
+    color: GOLD,
     fontWeight: 'bold',
   },
 });
